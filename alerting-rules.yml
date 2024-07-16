@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   groups:
-    - name: game-2048-alerts
+    - name: alertname
       rules:
         - alert: DeploymentDown
           expr: kube_deployment_status_replicas{namespace="game-2048", deployment="deployment-2048"} < 1
