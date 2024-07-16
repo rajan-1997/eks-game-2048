@@ -1,35 +1,29 @@
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: prometheus-rules
-  namespace: monitoring
-spec:
-  groups:
-    - name: alertname
-      rules:
-        - alert: DeploymentDown
-          expr: kube_deployment_status_replicas{namespace="game-2048", deployment="deployment-2048"} < 1
-          for: 1m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Deployment {{ $labels.deployment }} is down"
-            description: "The deployment {{ $labels.deployment }} in namespace {{ $labels.namespace }} has no available replicas for more than 1 minute."
-  
-        - alert: PodNotReady
-          expr: kube_pod_status_phase{namespace="game-2048", phase="Running"} < 1
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Pods in Deployment {{ $labels.deployment }} are not running"
-            description: "No pods for the deployment {{ $labels.deployment }} in namespace {{ $labels.namespace }} are in Running state for more than 1 minute."
-  
-        - alert: NodeCPUUsageHigh
-          expr: sum(rate(container_cpu_usage_seconds_total[5m])) / count(kube_node_status_allocatable{resource="cpu"}) > 0.9
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            summary: "High CPU usage on nodes"
-            description: "CPU usage exceeds 90% across nodes for more than 1 minute."
+groups:
+  - name: game-2048-alerts
+    rules:
+      - alert: DeploymentDown
+        expr: kube_deployment_status_replicas{namespace="game-2048", deployment="deployment-2048"} < 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Deployment {{ $labels.deployment }} is down"
+          description: "The deployment {{ $labels.deployment }} in namespace {{ $labels.namespace }} has no available replicas for more than 1 minute."
+
+      - alert: PodNotReady
+        expr: kube_pod_status_phase{namespace="game-2048", phase="Running"} < 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pods in Deployment {{ $labels.deployment }} are not running"
+          description: "No pods for the deployment {{ $labels.deployment }} in namespace {{ $labels.namespace }} are in Running state for more than 1 minute."
+
+      - alert: NodeCPUUsageHigh
+        expr: sum(rate(container_cpu_usage_seconds_total[5m])) / count(kube_node_status_allocatable{resource="cpu"}) > 0.9
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on nodes"
+          description: "CPU usage exceeds 90% across nodes for more than 1 minute."
