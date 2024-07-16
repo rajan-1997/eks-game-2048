@@ -1,0 +1,17 @@
+# prometheus.yml
+global:
+  scrape_interval:     1s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - a78d9a0048c1243c392931b1504a1a54-1370993125.us-west-2.elb.amazonaws.com:9093  # Update to Alertmanager's address
+
+rule_files:
+  - /etc/rules/rules.yml
+  - /root/new/alertmanager-demo/eks-game-2048/eks-game-2048/alerting-rules.yml
+
+scrape_configs:
+  - job_name: 'prometheus'
